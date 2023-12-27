@@ -1,8 +1,8 @@
-import { Title, Container } from "@mantine/core"
-import { SearchBar } from "./SearchBar"
+import { Title, Container } from "@mantine/core";
+import { SearchBar } from "./SearchBar";
+
 
 function App() {
-
   return (
     <>
       <Container>
@@ -12,7 +12,7 @@ function App() {
         </div>
       </Container>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
