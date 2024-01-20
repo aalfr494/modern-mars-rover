@@ -5,11 +5,49 @@ import DatePicker, { CalendarContainer } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { RoverList } from "./RoverList";
 
+export interface MarsRoverPhotosResponse {
+  photos: Photo[];
+}
+
+
+export interface Photo {
+  id: number;
+  sol: number;
+  camera: Camera;
+  img_src: string;
+  earth_date: string;
+  rover: Rover;
+}
+
+export interface Camera {
+  id: number;
+  name: string; // Name of the camera
+  rover_id: number;
+  full_name: string; // Full name of the camera
+}
+
+export interface Rover {
+  id: number;
+  name: string; // Name of the rover
+  landing_date: string; // Date of landing on Mars (YYYY-MM-DD)
+  launch_date: string; // Date of launch from Earth (YYYY-MM-DD)
+  status: string; // Operational status of the rover
+}
+
+// interface RoverDataRow {
+//   id: number;
+//   sol: number;
+//   camera: Camera; // Referencing the Camera interface
+//   img_src: string;
+//   earth_date: string;
+//   rover: Rover; // Referencing the Rover interface
+// }
+
 export const SearchBar = () => {
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [formattedAPIDate, setFormattedAPIDate] = useState("2022-01-01");
   const [roverName, setRoverName] = useState("Curiosity");
-  const [roverData, setRoverData] = useState({} as any);
+  const [roverData, setRoverData] = useState<MarsRoverPhotosResponse[]>([]);
 
   const API_KEY = "D5XmTzyRFPHDzKv3yBRMWwwtfYd7Ui986j8vC2KM";
   //sample request to NASA API
@@ -35,9 +73,13 @@ export const SearchBar = () => {
     setFormattedAPIDate(newcoolDate);
 
     try {
-      const data = await (await fetch(FULL_URL)).json();
-      console.log("HERE IS SOME STUFF", data);
-      setRoverData(data);
+      const data = await (await fetch(FULL_URL)).json()
+      if (data) {
+        setRoverData((prevState) => ({
+          ...prevState,
+          ...data
+        }))
+      }
     } catch (err) {
       console.error("ERROR OCCURRED", err);
     }
@@ -52,7 +94,6 @@ export const SearchBar = () => {
     console.log("on form submit");
     console.log("the state data", roverData);
     getAPIData();
-    setRoverData({});
   };
 
   return (
